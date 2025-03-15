@@ -92,13 +92,10 @@ public:
     void comprimir(const std::string &nomeArquivoEntrada, const std::string &nomeArquivoSaida);
 
     /**
-     * @brief Descomprime um arquivo previamente comprimido com Huffman
-     * @param nomeArquivoComprimido Caminho para o arquivo comprimido
-     * @param nomeArquivoSaida Caminho para o arquivo descomprimido a ser gerado
-     * @throw std::runtime_error Se ocorrer erro na abertura dos arquivos
-     *
-     * Realiza o processo inverso da compressão, lendo a árvore de Huffman
-     * serializada e utilizando-a para decodificar os dados comprimidos.
+     * @brief Descomprime um arquivo previamente comprimido com o algoritmo de Huffman
+     * @param nomeArquivoComprimido Nome do arquivo comprimido
+     * @param nomeArquivoSaida Nome do arquivo descomprimido a ser gerado
+     * @throw std::runtime_error Se não for possível abrir os arquivos
      */
     void descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida);
 
@@ -157,6 +154,54 @@ private:
      * Percorre recursivamente a árvore e libera a memória de cada nó.
      */
     void deleteArvore(No *no);
+
+    /**
+     * @brief Abre os arquivos de entrada e saída para descompressão
+     * @param nomeArquivoComprimido Caminho do arquivo comprimido
+     * @param nomeArquivoSaida Caminho do arquivo de saída
+     * @param entrada Referência ao stream de entrada a ser inicializado
+     * @param saida Referência ao stream de saída a ser inicializado
+     * @throw std::runtime_error Se houver erro ao abrir algum dos arquivos
+     */
+    void abrirArquivosDescompressao(
+        const std::string &nomeArquivoComprimido,
+        const std::string &nomeArquivoSaida,
+        std::ifstream &entrada,
+        std::ofstream &saida);
+
+    /**
+     * @brief Lê o número de caracteres do arquivo comprimido
+     * @param entrada Stream do arquivo comprimido
+     * @return Número de caracteres a serem descomprimidos
+     */
+    int lerNumeroCaracteres(std::ifstream &entrada);
+
+    /**
+     * @brief Processa um único byte do arquivo comprimido
+     * @param byte Byte a ser processado
+     * @param raiz Ponteiro para a raiz da árvore de Huffman
+     * @param atual Referência ao nó atual na árvore
+     * @param saida Stream do arquivo de saída
+     * @param caracteresLidos Referência ao contador de caracteres lidos
+     * @param numCaracteres Número total de caracteres a serem descomprimidos
+     * @return true se todos os caracteres foram descomprimidos, false caso contrário
+     */
+    bool processarByte(
+        char byte,
+        No *raiz,
+        No *&atual,
+        std::ofstream &saida,
+        int &caracteresLidos,
+        int numCaracteres);
+
+    /**
+     * @brief Decodifica os dados do arquivo comprimido
+     * @param entrada Stream do arquivo comprimido
+     * @param saida Stream do arquivo de saída
+     * @param raiz Ponteiro para a raiz da árvore de Huffman
+     * @param numCaracteres Número total de caracteres a serem descomprimidos
+     */
+    void decodificarDados(std::ifstream &entrada, std::ofstream &saida, No *raiz, int numCaracteres);
 };
 
 #endif // HUFFMAN_HPP

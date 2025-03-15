@@ -174,20 +174,87 @@ void HuffmanCoder::comprimir(const std::string &nomeArquivoEntrada, const std::s
     deleteArvore(raiz);
 }
 
-void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida)
+void HuffmanCoder::abrirArquivosDescompressao(
+    const std::string &nomeArquivoComprimido,
+    const std::string &nomeArquivoSaida,
+    std::ifstream &entrada,
+    std::ofstream &saida)
 {
-    std::ifstream entrada(nomeArquivoComprimido, std::ios::binary);
+    entrada.open(nomeArquivoComprimido, std::ios::binary);
     if (!entrada)
     {
         throw std::runtime_error("Não foi possível abrir o arquivo comprimido.");
     }
-    std::ofstream saida(nomeArquivoSaida, std::ios::binary);
+
+    saida.open(nomeArquivoSaida, std::ios::binary);
     if (!saida)
     {
         throw std::runtime_error("Não foi possível abrir o arquivo de saída.");
     }
+}
 
-    // Desserializar a árvore
+int HuffmanCoder::lerNumeroCaracteres(std::ifstream &entrada)
+{
+    int numCaracteres;
+    entrada.read(reinterpret_cast<char *>(&numCaracteres), sizeof(numCaracteres));
+    return numCaracteres;
+}
+
+bool HuffmanCoder::processarByte(
+    char byte,
+    No *raiz,
+    No *&atual,
+    std::ofstream &saida,
+    int &caracteresLidos,
+    int numCaracteres)
+{
+    const short int BIT_MAIS_SIGNIFICATIVO = 7;
+
+    for (int i = BIT_MAIS_SIGNIFICATIVO; i >= 0 && caracteresLidos < numCaracteres; --i)
+    {
+        bool bit = (byte & (1 << i)) != 0;
+        atual = bit ? atual->direita : atual->esquerda;
+
+        if (atual->esquerda == nullptr && atual->direita == nullptr)
+        {
+            saida.put(atual->caractere);
+            atual = raiz;
+            caracteresLidos++;
+
+            if (caracteresLidos >= numCaracteres)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void HuffmanCoder::decodificarDados(std::ifstream &entrada, std::ofstream &saida, No *raiz, int numCaracteres)
+{
+    No *atual = raiz;
+    char byte;
+    int caracteresLidos = 0;
+
+    while (entrada.get(byte) && caracteresLidos < numCaracteres)
+    {
+        if (processarByte(byte, raiz, atual, saida, caracteresLidos, numCaracteres))
+        {
+            break;
+        }
+    }
+}
+
+void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida)
+{
+    std::ifstream entrada;
+    std::ofstream saida;
+
+    // Abre os arquivos de entrada e saída
+    abrirArquivosDescompressao(nomeArquivoComprimido, nomeArquivoSaida, entrada, saida);
+
+    // Desserializa a árvore
     No *raiz = desserializarArvore(entrada);
     if (!raiz)
     {
@@ -195,29 +262,12 @@ void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const 
         return; // Arquivo vazio
     }
 
-    // Ler o número de caracteres
-    int numCaracteres;
-    entrada.read(reinterpret_cast<char *>(&numCaracteres), sizeof(numCaracteres));
+    // Lê o número de caracteres
+    int numCaracteres = lerNumeroCaracteres(entrada);
 
-    // Decodificar os bits
-    No *atual = raiz;
-    char byte;
-    int caracteresLidos = 0;
-    while (entrada.get(byte) && caracteresLidos < numCaracteres)
-    {
-        for (int i = 7; i >= 0 && caracteresLidos < numCaracteres; --i)
-        {
-            bool bit = (byte & (1 << i)) != 0;
-            atual = bit ? atual->direita : atual->esquerda;
-            if (atual->esquerda == nullptr && atual->direita == nullptr)
-            {
-                saida.put(atual->caractere);
-                atual = raiz;
-                caracteresLidos++;
-            }
-        }
-    }
+    // Decodifica os dados
+    decodificarDados(entrada, saida, raiz, numCaracteres);
 
-    // Liberar memória
+    // Libera memória
     deleteArvore(raiz);
 }
