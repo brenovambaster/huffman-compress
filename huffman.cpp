@@ -231,6 +231,7 @@ bool HuffmanCoder::processarByte(
     return false;
 }
 
+
 void HuffmanCoder::decodificarDados(std::ifstream &entrada, std::ofstream &saida, No *raiz, int numCaracteres)
 {
     No *atual = raiz;
@@ -245,6 +246,7 @@ void HuffmanCoder::decodificarDados(std::ifstream &entrada, std::ofstream &saida
         }
     }
 }
+
 
 void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida)
 {

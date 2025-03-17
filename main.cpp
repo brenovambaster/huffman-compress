@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 4)
     {
-        std::cerr << "Uso: " << argv[0] << " [-c|-d] arquivo_entrada arquivo_saida\n";
+        std::cerr << "Uso: " << argv[0] << " <C | D> arquivo_entrada arquivo_saida\n";
         return 1;
     }
     std::string modo = argv[1];
@@ -16,19 +16,19 @@ int main(int argc, char *argv[])
     HuffmanCoder coder;
     try
     {
-        if (modo == "-c")
+        if (modo == "C")
         {
             coder.comprimir(entrada, saida);
             std::cout << "Arquivo comprimido com sucesso.\n";
         }
-        else if (modo == "-d")
+        else if (modo == "D")
         {
             coder.descomprimir(entrada, saida);
             std::cout << "Arquivo descomprimido com sucesso.\n";
         }
         else
         {
-            std::cerr << "Modo inválido. Use -c para comprimir ou -d para descomprimir.\n";
+            std::cerr << "Modo inválido. Use C para comprimir ou D para descomprimir.\n";
             return 1;
         }
     }
