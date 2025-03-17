@@ -160,6 +160,7 @@ void HuffmanCoder::comprimir(const std::string &nomeArquivoEntrada, const std::s
             saida.put(byte);
         }
     }
+    
     // Escrever os bits restantes (completar com zeros, se necessário)
     if (!buffer.empty())
     {
@@ -253,10 +254,8 @@ void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const 
     std::ifstream entrada;
     std::ofstream saida;
 
-    // Abre os arquivos de entrada e saída
     abrirArquivosDescompressao(nomeArquivoComprimido, nomeArquivoSaida, entrada, saida);
 
-    // Desserializa a árvore
     No *raiz = desserializarArvore(entrada);
     if (!raiz)
     {
@@ -264,10 +263,8 @@ void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const 
         return; // Arquivo vazio
     }
 
-    // Lê o número de caracteres
     int numCaracteres = lerNumeroCaracteres(entrada);
 
-    // Decodifica os dados
     decodificarDados(entrada, saida, raiz, numCaracteres);
 
     // Libera memória
