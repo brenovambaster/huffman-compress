@@ -17,9 +17,9 @@ bool Comparador::operator()(const No *a, const No *b) const
     return a->frequencia > b->frequencia;
 }
 
-std::array<int, 256> HuffmanCoder::contarFrequencias(const std::string &nomeArquivo)
+std::array<int, TAMANHO_ASCII> HuffmanCoder::contarFrequencias(const std::string &nomeArquivo)
 {
-    std::array<int, 256> frequencias = {0};
+    std::array<int, TAMANHO_ASCII> frequencias = {0};
     std::ifstream arquivo(nomeArquivo, std::ios::binary);
     if (!arquivo)
     {
@@ -33,10 +33,10 @@ std::array<int, 256> HuffmanCoder::contarFrequencias(const std::string &nomeArqu
     return frequencias;
 }
 
-No *HuffmanCoder::construirArvoreHuffman(const std::array<int, 256> &frequencias)
+No *HuffmanCoder::construirArvoreHuffman(const std::array<int, TAMANHO_ASCII> &frequencias)
 {
     std::priority_queue<No *, std::vector<No *>, Comparador> fila;
-    for (int i = 0; i < 256; ++i)
+    for (int i = 0; i < TAMANHO_ASCII; ++i)
     {
         if (frequencias[i] > 0)
         {

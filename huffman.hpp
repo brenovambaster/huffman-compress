@@ -10,6 +10,7 @@
 
 #ifndef HUFFMAN_HPP
 #define HUFFMAN_HPP
+#define TAMANHO_ASCII 256
 
 #include <string>
 #include <map>
@@ -106,7 +107,7 @@ private:
      * @return Array com a contagem de frequências para cada byte possível (0-255)
      * @throw std::runtime_error Se não for possível abrir o arquivo
      */
-    std::array<int, 256> contarFrequencias(const std::string &nomeArquivo);
+    std::array<int, TAMANHO_ASCII> contarFrequencias(const std::string &nomeArquivo);
 
     /**
      * @brief Constrói a árvore de Huffman baseada nas frequências dos caracteres
@@ -116,7 +117,7 @@ private:
      * Utiliza uma fila de prioridade para construir a árvore de forma eficiente,
      * combinando iterativamente os dois nós com menor frequência.
      */
-    No *construirArvoreHuffman(const std::array<int, 256> &frequencias);
+    No *construirArvoreHuffman(const std::array<int, TAMANHO_ASCII> &frequencias);
 
     /**
      * @brief Gera os códigos de Huffman para cada caractere
