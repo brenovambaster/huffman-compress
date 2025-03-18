@@ -9,6 +9,9 @@
 #include <vector>
 #include <stdexcept>
 
+
+using namespace std;
+
 No::No(unsigned char c, int f) : caractere(c), frequencia(f), esquerda(nullptr), direita(nullptr) {}
 No::No(int f, No *e, No *d) : caractere(0), frequencia(f), esquerda(e), direita(d) {}
 
@@ -17,13 +20,13 @@ bool Comparador::operator()(const No *a, const No *b) const
     return a->frequencia > b->frequencia;
 }
 
-std::array<int, TAMANHO_ASCII> HuffmanCoder::contarFrequencias(const std::string &nomeArquivo)
+array<int, TAMANHO_ASCII> HuffmanCoder::contarFrequencias(const string &nomeArquivo)
 {
-    std::array<int, TAMANHO_ASCII> frequencias = {0};
-    std::ifstream arquivo(nomeArquivo, std::ios::binary);
+    array<int, TAMANHO_ASCII> frequencias = {0};
+    ifstream arquivo(nomeArquivo, ios::binary);
     if (!arquivo)
     {
-        throw std::runtime_error("Não foi possível abrir o arquivo de entrada.");
+        throw runtime_error("Não foi possível abrir o arquivo de entrada.");
     }
     char c;
     while (arquivo.get(c))
@@ -33,9 +36,9 @@ std::array<int, TAMANHO_ASCII> HuffmanCoder::contarFrequencias(const std::string
     return frequencias;
 }
 
-No *HuffmanCoder::construirArvoreHuffman(const std::array<int, TAMANHO_ASCII> &frequencias)
+No *HuffmanCoder::construirArvoreHuffman(const array<int, TAMANHO_ASCII> &frequencias)
 {
-    std::priority_queue<No *, std::vector<No *>, Comparador> fila;
+    priority_queue<No *, vector<No *>, Comparador> fila;
     for (int i = 0; i < TAMANHO_ASCII; ++i)
     {
         if (frequencias[i] > 0)
@@ -57,7 +60,7 @@ No *HuffmanCoder::construirArvoreHuffman(const std::array<int, TAMANHO_ASCII> &f
     return fila.top();
 }
 
-void HuffmanCoder::gerarCodigos(No *no, const std::string &codigo, std::map<unsigned char, std::string> &codigos)
+void HuffmanCoder::cachearCodificacoes(No *no, const string &codigo, map<unsigned char, string> &codigos)
 {
     if (no == nullptr)
         return;
@@ -67,12 +70,12 @@ void HuffmanCoder::gerarCodigos(No *no, const std::string &codigo, std::map<unsi
     }
     else
     {
-        gerarCodigos(no->esquerda, codigo + "0", codigos);
-        gerarCodigos(no->direita, codigo + "1", codigos);
+        cachearCodificacoes(no->esquerda, codigo + "0", codigos);
+        cachearCodificacoes(no->direita, codigo + "1", codigos);
     }
 }
 
-void HuffmanCoder::serializarArvore(No *no, std::ofstream &arquivo)
+void HuffmanCoder::serializarArvore(No *no, ofstream &arquivo)
 {
     if (no == nullptr)
         return;
@@ -89,7 +92,7 @@ void HuffmanCoder::serializarArvore(No *no, std::ofstream &arquivo)
     }
 }
 
-No *HuffmanCoder::desserializarArvore(std::ifstream &arquivo)
+No *HuffmanCoder::desserializarArvore(ifstream &arquivo)
 {
     char bit;
     if (!arquivo.get(bit))
@@ -117,25 +120,23 @@ void HuffmanCoder::deleteArvore(No *no)
     delete no;
 }
 
-void HuffmanCoder::comprimir(const std::string &nomeArquivoEntrada, const std::string &nomeArquivoSaida)
+void HuffmanCoder::comprimir(const string &nomeArquivoEntrada, const string &nomeArquivoSaida)
 {
-    // Contar frequências
     auto frequencias = contarFrequencias(nomeArquivoEntrada);
     No *raiz = construirArvoreHuffman(frequencias);
 
-    // Gerar códigos
-    std::map<unsigned char, std::string> codigos;
-    gerarCodigos(raiz, "", codigos);
+    map<unsigned char, string> codigos;
+    cachearCodificacoes(raiz, "", codigos);
 
-    std::ifstream entrada(nomeArquivoEntrada, std::ios::binary);
-    std::ofstream saida(nomeArquivoSaida, std::ios::binary);
+    ifstream entrada(nomeArquivoEntrada, ios::binary);
+    ofstream saida(nomeArquivoSaida, ios::binary);
+
     if (!saida)
     {
         deleteArvore(raiz);
-        throw std::runtime_error("Não foi possível abrir o arquivo de saída.");
+        throw runtime_error("Não foi possível abrir o arquivo de saída.");
     }
 
-    // Serializar a árvore
     serializarArvore(raiz, saida);
 
     // Escrever o número total de caracteres
@@ -147,54 +148,54 @@ void HuffmanCoder::comprimir(const std::string &nomeArquivoEntrada, const std::s
     saida.write(reinterpret_cast<const char *>(&numCaracteres), sizeof(numCaracteres));
 
     // Comprimir os dados
-    std::string buffer;
+    string buffer;
     char c;
     while (entrada.get(c))
     {
         buffer += codigos[static_cast<unsigned char>(c)];
         while (buffer.size() >= 8)
         {
-            std::string byteStr = buffer.substr(0, 8);
+            string byteStr = buffer.substr(0, 8);
             buffer = buffer.substr(8);
-            unsigned char byte = static_cast<unsigned char>(std::stoi(byteStr, nullptr, 2));
+            unsigned char byte = static_cast<unsigned char>(stoi(byteStr, nullptr, 2));
             saida.put(byte);
         }
     }
     
-    // Escrever os bits restantes (completar com zeros, se necessário)
+    // Escrever os bits restantes (completa com zeros, se necessário)
     if (!buffer.empty())
     {
         while (buffer.size() < 8)
         {
             buffer += "0";
         }
-        unsigned char byte = static_cast<unsigned char>(std::stoi(buffer, nullptr, 2));
+        unsigned char byte = static_cast<unsigned char>(stoi(buffer, nullptr, 2));
         saida.put(byte);
     }
-    // Liberar memória
+
     deleteArvore(raiz);
 }
 
 void HuffmanCoder::abrirArquivosDescompressao(
-    const std::string &nomeArquivoComprimido,
-    const std::string &nomeArquivoSaida,
-    std::ifstream &entrada,
-    std::ofstream &saida)
+    const string &nomeArquivoComprimido,
+    const string &nomeArquivoSaida,
+    ifstream &entrada,
+    ofstream &saida)
 {
-    entrada.open(nomeArquivoComprimido, std::ios::binary);
+    entrada.open(nomeArquivoComprimido, ios::binary);
     if (!entrada)
     {
-        throw std::runtime_error("Não foi possível abrir o arquivo comprimido.");
+        throw runtime_error("Não foi possível abrir o arquivo comprimido.");
     }
 
-    saida.open(nomeArquivoSaida, std::ios::binary);
+    saida.open(nomeArquivoSaida, ios::binary);
     if (!saida)
     {
-        throw std::runtime_error("Não foi possível abrir o arquivo de saída.");
+        throw runtime_error("Não foi possível abrir o arquivo de saída.");
     }
 }
 
-int HuffmanCoder::lerNumeroCaracteres(std::ifstream &entrada)
+int HuffmanCoder::lerNumeroCaracteres(ifstream &entrada)
 {
     int numCaracteres;
     entrada.read(reinterpret_cast<char *>(&numCaracteres), sizeof(numCaracteres));
@@ -205,7 +206,7 @@ bool HuffmanCoder::processarByte(
     char byte,
     No *raiz,
     No *&atual,
-    std::ofstream &saida,
+    ofstream &saida,
     int &caracteresLidos,
     int numCaracteres)
 {
@@ -233,7 +234,7 @@ bool HuffmanCoder::processarByte(
 }
 
 
-void HuffmanCoder::decodificarDados(std::ifstream &entrada, std::ofstream &saida, No *raiz, int numCaracteres)
+void HuffmanCoder::decodificarDados(ifstream &entrada, ofstream &saida, No *raiz, int numCaracteres)
 {
     No *atual = raiz;
     char byte;
@@ -249,14 +250,15 @@ void HuffmanCoder::decodificarDados(std::ifstream &entrada, std::ofstream &saida
 }
 
 
-void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida)
+void HuffmanCoder::descomprimir(const string &nomeArquivoComprimido, const string &nomeArquivoSaida)
 {
-    std::ifstream entrada;
-    std::ofstream saida;
+    ifstream entrada;
+    ofstream saida;
 
     abrirArquivosDescompressao(nomeArquivoComprimido, nomeArquivoSaida, entrada, saida);
 
     No *raiz = desserializarArvore(entrada);
+
     if (!raiz)
     {
         deleteArvore(raiz);
@@ -267,6 +269,5 @@ void HuffmanCoder::descomprimir(const std::string &nomeArquivoComprimido, const 
 
     decodificarDados(entrada, saida, raiz, numCaracteres);
 
-    // Libera memória
     deleteArvore(raiz);
 }

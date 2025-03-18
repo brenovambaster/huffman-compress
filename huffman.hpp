@@ -19,6 +19,8 @@
 #include <array>
 #include <fstream>
 
+using namespace std;
+
 /**
  * @brief Estrutura que representa um nó da árvore de Huffman
  *
@@ -83,31 +85,31 @@ public:
      * @brief Comprime um arquivo utilizando codificação de Huffman
      * @param nomeArquivoEntrada Caminho para o arquivo a ser comprimido
      * @param nomeArquivoSaida Caminho para o arquivo comprimido a ser gerado
-     * @throw std::runtime_error Se ocorrer erro na abertura dos arquivos
+     * @throw runtime_error Se ocorrer erro na abertura dos arquivos
      *
      * O arquivo comprimido contém:
      * 1. A árvore de Huffman serializada
      * 2. O número total de caracteres no arquivo original
      * 3. Os dados comprimidos usando a codificação gerada
      */
-    void comprimir(const std::string &nomeArquivoEntrada, const std::string &nomeArquivoSaida);
+    void comprimir(const string &nomeArquivoEntrada, const string &nomeArquivoSaida);
 
     /**
      * @brief Descomprime um arquivo previamente comprimido com o algoritmo de Huffman
      * @param nomeArquivoComprimido Nome do arquivo comprimido
      * @param nomeArquivoSaida Nome do arquivo descomprimido a ser gerado
-     * @throw std::runtime_error Se não for possível abrir os arquivos
+     * @throw runtime_error Se não for possível abrir os arquivos
      */
-    void descomprimir(const std::string &nomeArquivoComprimido, const std::string &nomeArquivoSaida);
+    void descomprimir(const string &nomeArquivoComprimido, const string &nomeArquivoSaida);
 
 private:
     /**
      * @brief Conta a frequência de cada byte em um arquivo
      * @param nomeArquivo Nome do arquivo a ser analisado
      * @return Array com a contagem de frequências para cada byte possível (0-255)
-     * @throw std::runtime_error Se não for possível abrir o arquivo
+     * @throw runtime_error Se não for possível abrir o arquivo
      */
-    std::array<int, TAMANHO_ASCII> contarFrequencias(const std::string &nomeArquivo);
+    array<int, TAMANHO_ASCII> contarFrequencias(const string &nomeArquivo);
 
     /**
      * @brief Constrói a árvore de Huffman baseada nas frequências dos caracteres
@@ -117,7 +119,7 @@ private:
      * Utiliza uma fila de prioridade para construir a árvore de forma eficiente,
      * combinando iterativamente os dois nós com menor frequência.
      */
-    No *construirArvoreHuffman(const std::array<int, TAMANHO_ASCII> &frequencias);
+    No *construirArvoreHuffman(const array<int, TAMANHO_ASCII> &frequencias);
 
     /**
      * @brief Gera os códigos de Huffman para cada caractere
@@ -128,7 +130,7 @@ private:
      * Percorre a árvore recursivamente, adicionando '0' ao descer para a esquerda
      * e '1' ao descer para a direita, até chegar a um nó folha.
      */
-    void gerarCodigos(No *no, const std::string &codigo, std::map<unsigned char, std::string> &codigos);
+    void cachearCodificacoes(No *no, const string &codigo, map<unsigned char, string> &codigos);
 
     /**
      * @brief Serializa a árvore de Huffman para um arquivo
@@ -139,14 +141,14 @@ private:
      * - '0' para nós internos
      * - '1' seguido do caractere para nós folha
      */
-    void serializarArvore(No *no, std::ofstream &arquivo);
+    void serializarArvore(No *no, ofstream &arquivo);
 
     /**
      * @brief Desserializa a árvore de Huffman de um arquivo
      * @param arquivo Arquivo de entrada contendo a árvore serializada
      * @return Ponteiro para a raiz da árvore desserializada
      */
-    No *desserializarArvore(std::ifstream &arquivo);
+    No *desserializarArvore(ifstream &arquivo);
 
     /**
      * @brief Libera a memória alocada para a árvore de Huffman
@@ -162,20 +164,20 @@ private:
      * @param nomeArquivoSaida Caminho do arquivo de saída
      * @param entrada Referência ao stream de entrada a ser inicializado
      * @param saida Referência ao stream de saída a ser inicializado
-     * @throw std::runtime_error Se houver erro ao abrir algum dos arquivos
+     * @throw runtime_error Se houver erro ao abrir algum dos arquivos
      */
     void abrirArquivosDescompressao(
-        const std::string &nomeArquivoComprimido,
-        const std::string &nomeArquivoSaida,
-        std::ifstream &entrada,
-        std::ofstream &saida);
+        const string &nomeArquivoComprimido,
+        const string &nomeArquivoSaida,
+        ifstream &entrada,
+        ofstream &saida);
 
     /**
      * @brief Lê o número de caracteres do arquivo comprimido
      * @param entrada Stream do arquivo comprimido
      * @return Número de caracteres a serem descomprimidos
      */
-    int lerNumeroCaracteres(std::ifstream &entrada);
+    int lerNumeroCaracteres(ifstream &entrada);
 
     /**
      * @brief Processa um único byte do arquivo comprimido
@@ -191,7 +193,7 @@ private:
         char byte,
         No *raiz,
         No *&atual,
-        std::ofstream &saida,
+        ofstream &saida,
         int &caracteresLidos,
         int numCaracteres);
 
@@ -202,7 +204,7 @@ private:
      * @param raiz Ponteiro para a raiz da árvore de Huffman
      * @param numCaracteres Número total de caracteres a serem descomprimidos
      */
-    void decodificarDados(std::ifstream &entrada, std::ofstream &saida, No *raiz, int numCaracteres);
+    void decodificarDados(ifstream &entrada, ofstream &saida, No *raiz, int numCaracteres);
 };
 
 #endif // HUFFMAN_HPP

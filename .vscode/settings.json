@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.rmd": "markdown",
         "stdexcept": "cpp",
         "algorithm": "cpp",
         "array": "cpp",
@@ -69,6 +70,7 @@
         "random": "cpp",
         "string_view": "cpp",
         "numbers": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "text_encoding": "cpp"
     }
 }
