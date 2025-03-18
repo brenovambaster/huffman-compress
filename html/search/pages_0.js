@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['explicação_20do_20makefile_24',['Explicação do Makefile',['../md_entenda_makefile.html',1,'']]]
+  ['coding_20implementation_0',['Huffman Coding Implementation',['../md_README.html',1,'']]]
 ];

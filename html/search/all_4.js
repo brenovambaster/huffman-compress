@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['huffman_2ehpp_8',['huffman.hpp',['../huffman_8hpp.html',1,'']]],
-  ['huffmancoder_9',['HuffmanCoder',['../classHuffmanCoder.html',1,'']]]
+  ['esquerda_0',['esquerda',['../structNo.html#aeaadfa60fa9524f2056185ab04a6c48f',1,'No']]]
 ];

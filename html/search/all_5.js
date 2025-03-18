@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['no_10',['No',['../structNo.html',1,'No'],['../structNo.html#a579b20ae6b8723c9d212b5828710cb2a',1,'No::No(unsigned char c, int f)'],['../structNo.html#a01f162b7c38ecc19fd82934098ee3090',1,'No::No(int f, No *e, No *d)']]]
+  ['features_0',['Features',['../md_README.html#autotoc_md1',1,'']]],
+  ['file_1',['file',['../md_README.html#autotoc_md5',1,'Compressing a File'],['../md_README.html#autotoc_md6',1,'Decompressing a File']]],
+  ['frequencia_2',['frequencia',['../structNo.html#ac99228b4b7567c8e97fa5f1d0006a6a7',1,'No']]]
 ];

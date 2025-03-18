@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['operator_28_29_11',['operator()',['../structComparador.html#a4d22fc9841a797f140e15f3d9bce6ef3',1,'Comparador']]]
+  ['huffman_20coding_20implementation_0',['Huffman Coding Implementation',['../md_README.html',1,'']]],
+  ['huffman_2ehpp_1',['huffman.hpp',['../huffman_8hpp.html',1,'']]],
+  ['huffmancoder_2',['HuffmanCoder',['../classHuffmanCoder.html',1,'']]]
 ];

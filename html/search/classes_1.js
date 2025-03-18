@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['huffmancoder_13',['HuffmanCoder',['../classHuffmanCoder.html',1,'']]]
+  ['huffmancoder_0',['HuffmanCoder',['../classHuffmanCoder.html',1,'']]]
 ];
