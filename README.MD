@@ -122,4 +122,3 @@ To create a zip archive of the project files:
 make zip
 ```
 
-Happy Coding!
